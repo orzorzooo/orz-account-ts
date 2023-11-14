@@ -8,8 +8,6 @@ import * as z from "zod";
 import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { onSubmit } from "./actions";
-import { createUsers } from "@/lib/db/users";
 
 const formSchema = z.object({
   name: z.string().min(2, {
@@ -43,17 +41,15 @@ export default function CreateUserForm() {
     // Do something with the form values.
     // ✅ This will be type-safe and validated.
     // console.log(values);
-    const value = {
-      name: "cc",
-      email: "fc@gmail.com",
-      password: "bb",
-    };
-
-    const result = await createUsers(value);
+    // const value = {
+    //   name: "cc",
+    //   email: "fc@gmail.com",
+    //   password: "bb",
+    // };
   }
   return (
     <Form {...form}>
-      <form className="space-y-8">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
         <FormField
           control={form.control}
           name="name"
@@ -82,7 +78,7 @@ export default function CreateUserForm() {
             </FormItem>
           )}
         />
-        <Button formAction={onSubmit}>Submit</Button>
+        <Button type="submit">Submit</Button>
       </form>
     </Form>
   );
