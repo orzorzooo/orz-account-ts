@@ -1,6 +1,9 @@
 import Image from "next/image";
 import FormExample from "../components/formExample";
-export default function Home() {
+import { getUsers } from "../lib/db/users";
+
+export default async function Home() {
+  const users = await getUsers();
   return (
     <main className="flex min-h-screen flex-col items-center justify-between p-24">
       <div className="z-10 max-w-5xl w-full items-center justify-between font-mono text-sm lg:flex">
@@ -33,6 +36,12 @@ export default function Home() {
       <div>
         <FormExample></FormExample>
       </div>
+      <div>{JSON.stringify(users)}</div>
+      <ul>
+        {users.map((user) => (
+          <div>{user.name}</div>
+        ))}
+      </ul>
     </main>
   );
 }
