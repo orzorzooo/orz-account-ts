@@ -1,9 +1,10 @@
 import Image from "next/image";
 import FormExample from "../components/formExample";
-import { getUsers } from "../lib/db/users";
+import { db, users } from "@/lib/drizzle";
 
 export default async function Home() {
-  const users = await getUsers();
+  const allUsers = await db.select().from(users);
+
   return (
     <main className="flex min-h-screen flex-col items-center justify-between p-24">
       <div className="z-10 max-w-5xl w-full items-center justify-between font-mono text-sm lg:flex">
@@ -38,7 +39,7 @@ export default async function Home() {
       </div>
       <div>{JSON.stringify(users)}</div>
       <ul>
-        {users.map((user) => (
+        {allUsers.map((user) => (
           <div>{user.name}</div>
         ))}
       </ul>

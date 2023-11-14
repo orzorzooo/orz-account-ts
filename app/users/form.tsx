@@ -1,7 +1,5 @@
 "use client";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useFormState, useFormStatus } from "react-dom";
-
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 
@@ -16,17 +14,7 @@ const formSchema = z.object({
   email: z.string().email(),
 });
 
-function SubmitButton() {
-  const { pending } = useFormStatus();
-
-  return (
-    <button type="submit" aria-disabled={pending}>
-      Add
-    </button>
-  );
-}
-
-export default function CreateUserForm() {
+export default function CreateUserForm({ createUsers }: any) {
   // 1. Define your form.
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -37,19 +25,14 @@ export default function CreateUserForm() {
   });
 
   // 2. Define a submit handler.
-  async function onSubmit(values: z.infer<typeof formSchema>) {
+  function onSubmit(values: z.infer<typeof formSchema>) {
     // Do something with the form values.
     // ✅ This will be type-safe and validated.
-    // console.log(values);
-    // const value = {
-    //   name: "cc",
-    //   email: "fc@gmail.com",
-    //   password: "bb",
-    // };
+    createUsers(values);
   }
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+      <form className="space-y-8" onSubmit={form.handleSubmit(onSubmit)}>
         <FormField
           control={form.control}
           name="name"
