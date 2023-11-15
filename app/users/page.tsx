@@ -13,10 +13,12 @@ export default async function Home() {
         <CreateUserForm createUsers={createUsers}></CreateUserForm>
         <ul>
           {allUsers.map((user) => (
-            <>
-              <div key={user.id}>{user.name}</div>
+            <li className="p-5 border border-gray-200 my-3 rounded-xl">
+              <div key={user.id} className="font-bold text-xl">
+                {user.name}
+              </div>
               <div>{user.email}</div>
-            </>
+            </li>
           ))}
         </ul>
       </div>
