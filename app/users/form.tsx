@@ -7,6 +7,8 @@ import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 
+import { useFormState, useFormStatus } from "react-dom";
+
 const formSchema = z.object({
   name: z.string().min(2, {
     message: "Username must be at least 2 characters.",
@@ -16,6 +18,8 @@ const formSchema = z.object({
 
 export default function CreateUserForm({ createUsers }: any) {
   // 1. Define your form.
+
+  const { pending, data } = useFormStatus();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -27,9 +31,12 @@ export default function CreateUserForm({ createUsers }: any) {
   // 2. Define a submit handler.
   function onSubmit(values: z.infer<typeof formSchema>) {
     // Do something with the form values.
+
     // ✅ This will be type-safe and validated.
+    console.log(pending, data);
     createUsers(values);
   }
+
   return (
     <Form {...form}>
       <form className="space-y-8" onSubmit={form.handleSubmit(onSubmit)}>
@@ -61,6 +68,7 @@ export default function CreateUserForm({ createUsers }: any) {
             </FormItem>
           )}
         />
+
         <Button type="submit">Submit</Button>
       </form>
     </Form>
