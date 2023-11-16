@@ -2,12 +2,11 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
-
 import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-
-import { useFormState, useFormStatus } from "react-dom";
+import { ReloadIcon } from "@radix-ui/react-icons";
+import { createUsers } from "./actions";
 
 const formSchema = z.object({
   name: z.string().min(2, {
@@ -16,10 +15,11 @@ const formSchema = z.object({
   email: z.string().email(),
 });
 
-export default function CreateUserForm({ createUsers }: any) {
+let pending = false;
+
+export default function CreateUserForm() {
   // 1. Define your form.
 
-  const { pending, data } = useFormStatus();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -29,12 +29,13 @@ export default function CreateUserForm({ createUsers }: any) {
   });
 
   // 2. Define a submit handler.
-  function onSubmit(values: z.infer<typeof formSchema>) {
+  async function onSubmit(values: z.infer<typeof formSchema>) {
     // Do something with the form values.
-
     // ✅ This will be type-safe and validated.
-    console.log(pending, data);
-    createUsers(values);
+    pending = true;
+    const result = await createUsers(values);
+    pending = false;
+    console.log("success", result);
   }
 
   return (
@@ -69,7 +70,11 @@ export default function CreateUserForm({ createUsers }: any) {
           )}
         />
 
-        <Button type="submit">Submit</Button>
+        {/* <SubmitButton></SubmitButton> */}
+        <Button type="submit" disabled={pending}>
+          {pending ? <ReloadIcon className="mr-2 h-4 w-4 animate-spin" /> : ""}
+          {pending ? "pending" : "Submit"}
+        </Button>
       </form>
     </Form>
   );

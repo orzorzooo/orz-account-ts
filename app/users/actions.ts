@@ -6,9 +6,13 @@ import { eq } from "drizzle-orm";
 
 export const createUsers = async (user: NewUser) => {
   user.password = "123";
-  const result = await db.insert(users).values(user);
-  revalidatePath("/users");
-  console.log("result", result);
+  try {
+    const result = await db.insert(users).values(user);
+    revalidatePath("/users");
+    return { status: true };
+  } catch (error) {
+    return { status: false };
+  }
 };
 
 export const deleteUser = async (user: Users) => {
