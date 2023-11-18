@@ -4,12 +4,13 @@ import type { Users, NewUser } from "@/lib/drizzle";
 import { revalidatePath } from "next/cache";
 import { eq } from "drizzle-orm";
 import { finished } from "stream";
+import { redirect } from "next/navigation";
 
 export const createUsers = async (user: NewUser) => {
   user.password = "123";
   try {
     const result = await db.insert(users).values(user);
-    revalidatePath("/users");
+    revalidatePath("/");
     return { status: true };
   } catch (error) {
     return { status: false };
@@ -23,11 +24,12 @@ export const updateUser = async (user: Users, updateData: any) => {
   } catch (error) {
     return { status: false };
   } finally {
-    revalidatePath("/users");
+    revalidatePath("/");
   }
 };
 
 export const deleteUser = async (user: Users) => {
-  const result = await db.delete(users).where(eq(users.id, user.id));
+  await db.delete(users).where(eq(users.id, user.id));
   revalidatePath("/users");
+  redirect("/users");
 };

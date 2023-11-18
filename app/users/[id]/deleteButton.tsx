@@ -4,7 +4,7 @@ import { db, users } from "@/lib/drizzle";
 import { deleteUser } from "../actions";
 import { useState } from "react";
 import type { Users } from "@/lib/drizzle";
-import { useRouter } from "next/navigation";
+import { redirect, useRouter } from "next/navigation";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -25,7 +25,7 @@ export default function DeleteButton({ user }: { user: Users }) {
     setPending(true);
     try {
       await deleteUser(user);
-      router.back();
+      // redirect("/users");
     } catch (error) {}
     setPending(false);
     // router.push("/users");
