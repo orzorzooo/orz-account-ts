@@ -49,7 +49,6 @@ export default function DeleteButton({ user }: { user: Users }) {
           <AlertDialogAction
             onClick={() => {
               onDelete(user);
-              console.log("fuck");
             }}
           >
             {pending ? "pending" : "Continue"}

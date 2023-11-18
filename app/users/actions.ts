@@ -1,5 +1,5 @@
 "use server";
-import { db, users } from "@/lib/drizzle";
+import { db, users, posts } from "@/lib/drizzle";
 import type { Users, NewUser } from "@/lib/drizzle";
 import { revalidatePath } from "next/cache";
 import { eq } from "drizzle-orm";
@@ -29,6 +29,7 @@ export const updateUser = async (user: Users, updateData: any) => {
 };
 
 export const deleteUser = async (user: Users) => {
+  await db.delete(posts).where(eq(posts.user_id, user.id));
   await db.delete(users).where(eq(users.id, user.id));
   revalidatePath("/users");
   redirect("/users");

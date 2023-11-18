@@ -20,6 +20,9 @@ export const users = pgTable(
   //   };
   // }
 );
+export const usersRelations = relations(users, ({ many }) => ({
+  posts: many(posts),
+}));
 
 export const posts = pgTable(
   "posts",
@@ -39,10 +42,6 @@ export const posts = pgTable(
   // }
 );
 
-export const usersRelations = relations(users, ({ many }) => ({
-  posts: many(posts),
-}));
-
 export const postsRelations = relations(posts, ({ one }) => ({
   user: one(users, {
     fields: [posts.user_id],
@@ -50,7 +49,7 @@ export const postsRelations = relations(posts, ({ one }) => ({
   }),
 }));
 
-export const db = drizzle(sql, { schema: { posts, users } });
+export const db = drizzle(sql, { schema: { posts, users, postsRelations, usersRelations } });
 export type Users = typeof users.$inferSelect;
 export type NewUser = typeof users.$inferInsert;
 export type Post = typeof posts.$inferSelect;
