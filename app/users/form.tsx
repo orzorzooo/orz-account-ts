@@ -6,7 +6,8 @@ import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { ReloadIcon } from "@radix-ui/react-icons";
-import { createUsers } from "./actions";
+import { createUsers, updateUser } from "./actions";
+import { useRouter } from "next/navigation";
 
 const formSchema = z.object({
   name: z.string().min(2, {
@@ -17,14 +18,15 @@ const formSchema = z.object({
 
 let pending = false;
 
-export default function CreateUserForm() {
+export default function CreateUserForm({ user }: any) {
+  const router = useRouter();
   // 1. Define your form.
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      name: "",
-      email: "",
+      name: user ? user.name : "",
+      email: user ? user.email : "",
     },
   });
 
@@ -33,9 +35,15 @@ export default function CreateUserForm() {
     // Do something with the form values.
     // ✅ This will be type-safe and validated.
     pending = true;
-    const result = await createUsers(values);
+    if (!user) {
+      const result = await createUsers(values);
+      console.log("success", result);
+    } else {
+      const result = await updateUser(user, values);
+      console.log("success", result);
+      router.push("/users");
+    }
     pending = false;
-    console.log("success", result);
   }
 
   return (
@@ -73,7 +81,7 @@ export default function CreateUserForm() {
         {/* <SubmitButton></SubmitButton> */}
         <Button type="submit" disabled={pending}>
           {pending ? <ReloadIcon className="mr-2 h-4 w-4 animate-spin" /> : ""}
-          {pending ? "pending" : "Submit"}
+          {pending ? "Pending" : user ? "Update" : "Submit"}
         </Button>
       </form>
     </Form>

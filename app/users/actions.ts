@@ -3,6 +3,7 @@ import { db, users } from "@/lib/drizzle";
 import type { Users, NewUser } from "@/lib/drizzle";
 import { revalidatePath } from "next/cache";
 import { eq } from "drizzle-orm";
+import { finished } from "stream";
 
 export const createUsers = async (user: NewUser) => {
   user.password = "123";
@@ -12,6 +13,17 @@ export const createUsers = async (user: NewUser) => {
     return { status: true };
   } catch (error) {
     return { status: false };
+  }
+};
+
+export const updateUser = async (user: Users, updateData: any) => {
+  try {
+    const result = await db.update(users).set(updateData).where(eq(users.id, user.id));
+    return { status: true };
+  } catch (error) {
+    return { status: false };
+  } finally {
+    revalidatePath("/users");
   }
 };
 
