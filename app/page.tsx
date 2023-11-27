@@ -46,7 +46,7 @@ export default function Home() {
             <small className="w-full font-bold text-2xl anime opacity-0">Register System</small>
             <br />
             <Button asChild className=" anime opacity-0 mt-10">
-              <Link href={"/login"}>Log in</Link>
+              <Link href={"/api/auth/signin"}>Log in</Link>
             </Button>
           </div>
         </div>
