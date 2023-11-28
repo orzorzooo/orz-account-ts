@@ -3,7 +3,6 @@ import { notFound, redirect } from "next/navigation";
 import BtnSignOut from "./BtnSignOut";
 export default async function Home() {
   const user = await getUserSession();
-  // if (!user) return notFound();
   if (!user) return redirect("/");
 
   return (
