@@ -1,5 +1,6 @@
 import CreateUserForm from "../form";
-import { db, users, profile_model } from "@/lib/drizzle";
+import { db } from "@/lib/drizzle";
+import { users, profile_model } from "@/lib/schema";
 import { eq } from "drizzle-orm";
 import DeleteButton from "./deleteButton";
 import { notFound } from "next/navigation";

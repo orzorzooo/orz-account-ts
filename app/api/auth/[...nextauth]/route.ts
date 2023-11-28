@@ -1,7 +1,7 @@
 import NextAuth from "next-auth";
 import { NextAuthOptions } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
-import { db, users, posts } from "@/lib/drizzle";
+import { db, models } from "@/lib/drizzle";
 import { eq } from "drizzle-orm";
 
 const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID!;
@@ -41,9 +41,9 @@ const authOption: NextAuthOptions = {
         throw new Error("No Profile");
       }
       await db
-        .insert(users)
+        .insert(models.users)
         .values({ email: String(profile.email), password: "****", name: String(profile.name) })
-        .onConflictDoUpdate({ target: users.email, set: { name: profile.name } });
+        .onConflictDoUpdate({ target: models.users.email, set: { name: profile.name } });
       return true;
     },
     async redirect({ url, baseUrl }) {
@@ -54,7 +54,7 @@ const authOption: NextAuthOptions = {
     session,
     async jwt({ token, user, account, profile }) {
       if (profile) {
-        const user = await db.query.users.findFirst({ where: eq(users.email, String(profile.email)) });
+        const user = await db.query.users.findFirst({ where: eq(models.users.email, String(profile.email)) });
 
         if (!user) {
           throw new Error("No user found");

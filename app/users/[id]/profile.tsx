@@ -9,7 +9,6 @@ import { Input } from "@/components/ui/input";
 import { ReloadIcon } from "@radix-ui/react-icons";
 import { useRouter } from "next/navigation";
 import { createProfile } from "../actions";
-import type { NewProfile } from "@/lib/drizzle";
 const formSchema = z.object({
   bandname: z.string().min(2, {
     message: "Username must be at least 2 characters.",

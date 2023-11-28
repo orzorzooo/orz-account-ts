@@ -1,5 +1,5 @@
 "use client";
-import type { Users } from "../../lib/drizzle";
+import type { Users } from "@/lib/schema";
 import { deleteUser } from "./actions";
 import { Button } from "../../components/ui/button";
 import { useEffect, useState } from "react";

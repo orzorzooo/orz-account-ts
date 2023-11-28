@@ -1,10 +1,10 @@
 import Image from "next/image";
-import { db, users } from "@/lib/drizzle";
+import { db, models } from "@/lib/drizzle";
 import CreateUserForm from "./form";
 import { List } from "./list";
 
 export default async function Home() {
-  const allUsers = await db.select().from(users);
+  const allUsers = await db.select().from(models.users);
   if (!allUsers) return false;
   return (
     <main className="flex min-h-screen flex-col items-center justify-around p-24">

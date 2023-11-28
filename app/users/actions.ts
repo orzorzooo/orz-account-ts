@@ -1,6 +1,7 @@
 "use server";
-import { db, users, posts, profile_model } from "@/lib/drizzle";
-import type { Users, NewUser, Profile, NewProfile } from "@/lib/drizzle";
+import { db, models } from "@/lib/drizzle";
+// import { users, posts, profile_model } from "@/lib/schema";
+import type { Users, NewUser, Profile, NewProfile } from "@/lib/schema";
 import { revalidatePath } from "next/cache";
 import { eq } from "drizzle-orm";
 import { redirect } from "next/navigation";
@@ -8,7 +9,7 @@ import { redirect } from "next/navigation";
 export const createUsers = async (user: NewUser) => {
   user.password = "123";
   try {
-    const result = await db.insert(users).values(user);
+    const result = await db.insert(models.users).values(user);
     revalidatePath("/");
     return { status: true };
   } catch (error) {
@@ -18,7 +19,7 @@ export const createUsers = async (user: NewUser) => {
 
 export const updateUser = async (user: Users, updateData: any) => {
   try {
-    const result = await db.update(users).set(updateData).where(eq(users.id, user.id));
+    const result = await db.update(models.users).set(updateData).where(eq(models.users.id, user.id));
     return { status: true };
   } catch (error) {
     return { status: false };
@@ -28,8 +29,8 @@ export const updateUser = async (user: Users, updateData: any) => {
 };
 
 export const deleteUser = async (user: Users) => {
-  await db.delete(posts).where(eq(posts.user_id, user.id));
-  await db.delete(users).where(eq(users.id, user.id));
+  await db.delete(models.posts).where(eq(models.posts.user_id, user.id));
+  await db.delete(models.users).where(eq(models.users.id, user.id));
   revalidatePath("/users");
   redirect("/users");
 };
@@ -37,8 +38,8 @@ export const deleteUser = async (user: Users) => {
 // onConflictDoUpdate target欄位在DB需有UNIQUE屬性
 export const createProfile = async (profile: NewProfile) => {
   try {
-    const result = await db.insert(profile_model).values(profile).onConflictDoUpdate({
-      target: profile_model.user_id,
+    const result = await db.insert(models.profile).values(profile).onConflictDoUpdate({
+      target: models.profile.user_id,
       set: profile,
     });
     console.log(result);
