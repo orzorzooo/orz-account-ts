@@ -1,23 +1,26 @@
 import CreateUserForm from "../form";
-import { db, users } from "@/lib/drizzle";
+import { db, users, profile_model } from "@/lib/drizzle";
 import { eq } from "drizzle-orm";
 import DeleteButton from "./deleteButton";
 import { notFound } from "next/navigation";
 import CreatFormPost from "./createPostForm";
 import Posts from "./posts";
+import CreateProfileForm from "./profile";
 
 export default async function Page({ params }: { params: { id: number } }) {
-  const [user] = await db.select().from(users).where(eq(users.id, params.id)).limit(1);
-  console.log("bb", user);
+  // const [user] = await db.select().from(users).where(eq(users.id, params.id)).limit(1);
+  const user = await db.query.users.findFirst({ where: eq(users.id, params.id), with: { profile: true } });
+
+  console.log("user", user);
   if (!user) {
     return notFound();
   }
   return (
     <>
-      <div className="flex min-h-screen flex-col items-center justify-start p-24">
-        <div className="font-bold text-xl">修改資料</div>
-        <div className="flex justify-around w-full h-96">
-          <div className="">
+      <div className="w-full p-16">
+        {/* <div className="font-bold text-xl">修改資料</div> */}
+        <div className="flex flex-col space-y-8 lg:flex-row lg:space-x-12 lg:space-y-0">
+          <div className="flex-2">
             <div className="font-bold border-b border-gray text-xl mb-3"> User Info</div>
 
             <div className="font-bold text-3xl">{user.name}</div>
@@ -25,12 +28,9 @@ export default async function Page({ params }: { params: { id: number } }) {
             <DeleteButton user={user}></DeleteButton>
           </div>
 
-          {/* <div>
-            <CreateUserForm user={user} update={true}></CreateUserForm>
-          </div> */}
-          <div className="justify-self-start w-2/3">
-            <div className="font-bold border-b border-gray text-xl mb-3"> Posts</div>
-            <Posts user={user}></Posts>
+          <div className="flex-1 ">
+            <div className="lg:max-w-2xl font-bold border-b border-gray text-xl mb-3"> Profile</div>
+            <CreateProfileForm user={user}></CreateProfileForm>
           </div>
         </div>
         <div className="self-end"></div>
